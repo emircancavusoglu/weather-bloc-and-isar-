@@ -9,13 +9,13 @@ part of 'weather.dart';
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
 
-extension GetUserCollection on Isar {
-  IsarCollection<User> get users => this.collection();
+extension GetCityCollection on Isar {
+  IsarCollection<City> get citys => this.collection();
 }
 
-const UserSchema = CollectionSchema(
-  name: r'User',
-  id: -7838171048429979076,
+const CitySchema = CollectionSchema(
+  name: r'City',
+  id: 7924339642267295226,
   properties: {
     r'day': PropertySchema(
       id: 0,
@@ -23,22 +23,22 @@ const UserSchema = CollectionSchema(
       type: IsarType.string,
     )
   },
-  estimateSize: _userEstimateSize,
-  serialize: _userSerialize,
-  deserialize: _userDeserialize,
-  deserializeProp: _userDeserializeProp,
+  estimateSize: _cityEstimateSize,
+  serialize: _citySerialize,
+  deserialize: _cityDeserialize,
+  deserializeProp: _cityDeserializeProp,
   idName: r'id',
   indexes: {},
   links: {},
   embeddedSchemas: {},
-  getId: _userGetId,
-  getLinks: _userGetLinks,
-  attach: _userAttach,
+  getId: _cityGetId,
+  getLinks: _cityGetLinks,
+  attach: _cityAttach,
   version: '3.1.0+1',
 );
 
-int _userEstimateSize(
-  User object,
+int _cityEstimateSize(
+  City object,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -52,8 +52,8 @@ int _userEstimateSize(
   return bytesCount;
 }
 
-void _userSerialize(
-  User object,
+void _citySerialize(
+  City object,
   IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
@@ -61,19 +61,19 @@ void _userSerialize(
   writer.writeString(offsets[0], object.day);
 }
 
-User _userDeserialize(
+City _cityDeserialize(
   Id id,
   IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = User();
+  final object = City();
   object.day = reader.readStringOrNull(offsets[0]);
   object.id = id;
   return object;
 }
 
-P _userDeserializeProp<P>(
+P _cityDeserializeProp<P>(
   IsarReader reader,
   int propertyId,
   int offset,
@@ -87,28 +87,28 @@ P _userDeserializeProp<P>(
   }
 }
 
-Id _userGetId(User object) {
+Id _cityGetId(City object) {
   return object.id;
 }
 
-List<IsarLinkBase<dynamic>> _userGetLinks(User object) {
+List<IsarLinkBase<dynamic>> _cityGetLinks(City object) {
   return [];
 }
 
-void _userAttach(IsarCollection<dynamic> col, Id id, User object) {
+void _cityAttach(IsarCollection<dynamic> col, Id id, City object) {
   object.id = id;
 }
 
-extension UserQueryWhereSort on QueryBuilder<User, User, QWhere> {
-  QueryBuilder<User, User, QAfterWhere> anyId() {
+extension CityQueryWhereSort on QueryBuilder<City, City, QWhere> {
+  QueryBuilder<City, City, QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
     });
   }
 }
 
-extension UserQueryWhere on QueryBuilder<User, User, QWhereClause> {
-  QueryBuilder<User, User, QAfterWhereClause> idEqualTo(Id id) {
+extension CityQueryWhere on QueryBuilder<City, City, QWhereClause> {
+  QueryBuilder<City, City, QAfterWhereClause> idEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
         lower: id,
@@ -117,7 +117,7 @@ extension UserQueryWhere on QueryBuilder<User, User, QWhereClause> {
     });
   }
 
-  QueryBuilder<User, User, QAfterWhereClause> idNotEqualTo(Id id) {
+  QueryBuilder<City, City, QAfterWhereClause> idNotEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -139,7 +139,7 @@ extension UserQueryWhere on QueryBuilder<User, User, QWhereClause> {
     });
   }
 
-  QueryBuilder<User, User, QAfterWhereClause> idGreaterThan(Id id,
+  QueryBuilder<City, City, QAfterWhereClause> idGreaterThan(Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -148,7 +148,7 @@ extension UserQueryWhere on QueryBuilder<User, User, QWhereClause> {
     });
   }
 
-  QueryBuilder<User, User, QAfterWhereClause> idLessThan(Id id,
+  QueryBuilder<City, City, QAfterWhereClause> idLessThan(Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -157,7 +157,7 @@ extension UserQueryWhere on QueryBuilder<User, User, QWhereClause> {
     });
   }
 
-  QueryBuilder<User, User, QAfterWhereClause> idBetween(
+  QueryBuilder<City, City, QAfterWhereClause> idBetween(
     Id lowerId,
     Id upperId, {
     bool includeLower = true,
@@ -174,8 +174,8 @@ extension UserQueryWhere on QueryBuilder<User, User, QWhereClause> {
   }
 }
 
-extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
-  QueryBuilder<User, User, QAfterFilterCondition> dayIsNull() {
+extension CityQueryFilter on QueryBuilder<City, City, QFilterCondition> {
+  QueryBuilder<City, City, QAfterFilterCondition> dayIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
         property: r'day',
@@ -183,7 +183,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> dayIsNotNull() {
+  QueryBuilder<City, City, QAfterFilterCondition> dayIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
         property: r'day',
@@ -191,7 +191,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> dayEqualTo(
+  QueryBuilder<City, City, QAfterFilterCondition> dayEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
@@ -204,7 +204,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> dayGreaterThan(
+  QueryBuilder<City, City, QAfterFilterCondition> dayGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -219,7 +219,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> dayLessThan(
+  QueryBuilder<City, City, QAfterFilterCondition> dayLessThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -234,7 +234,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> dayBetween(
+  QueryBuilder<City, City, QAfterFilterCondition> dayBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -253,7 +253,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> dayStartsWith(
+  QueryBuilder<City, City, QAfterFilterCondition> dayStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -266,7 +266,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> dayEndsWith(
+  QueryBuilder<City, City, QAfterFilterCondition> dayEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -279,7 +279,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> dayContains(String value,
+  QueryBuilder<City, City, QAfterFilterCondition> dayContains(String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
@@ -290,7 +290,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> dayMatches(String pattern,
+  QueryBuilder<City, City, QAfterFilterCondition> dayMatches(String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
@@ -301,7 +301,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> dayIsEmpty() {
+  QueryBuilder<City, City, QAfterFilterCondition> dayIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'day',
@@ -310,7 +310,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> dayIsNotEmpty() {
+  QueryBuilder<City, City, QAfterFilterCondition> dayIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'day',
@@ -319,7 +319,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> idEqualTo(Id value) {
+  QueryBuilder<City, City, QAfterFilterCondition> idEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -328,7 +328,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> idGreaterThan(
+  QueryBuilder<City, City, QAfterFilterCondition> idGreaterThan(
     Id value, {
     bool include = false,
   }) {
@@ -341,7 +341,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> idLessThan(
+  QueryBuilder<City, City, QAfterFilterCondition> idLessThan(
     Id value, {
     bool include = false,
   }) {
@@ -354,7 +354,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> idBetween(
+  QueryBuilder<City, City, QAfterFilterCondition> idBetween(
     Id lower,
     Id upper, {
     bool includeLower = true,
@@ -372,52 +372,52 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
   }
 }
 
-extension UserQueryObject on QueryBuilder<User, User, QFilterCondition> {}
+extension CityQueryObject on QueryBuilder<City, City, QFilterCondition> {}
 
-extension UserQueryLinks on QueryBuilder<User, User, QFilterCondition> {}
+extension CityQueryLinks on QueryBuilder<City, City, QFilterCondition> {}
 
-extension UserQuerySortBy on QueryBuilder<User, User, QSortBy> {
-  QueryBuilder<User, User, QAfterSortBy> sortByDay() {
+extension CityQuerySortBy on QueryBuilder<City, City, QSortBy> {
+  QueryBuilder<City, City, QAfterSortBy> sortByDay() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'day', Sort.asc);
     });
   }
 
-  QueryBuilder<User, User, QAfterSortBy> sortByDayDesc() {
+  QueryBuilder<City, City, QAfterSortBy> sortByDayDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'day', Sort.desc);
     });
   }
 }
 
-extension UserQuerySortThenBy on QueryBuilder<User, User, QSortThenBy> {
-  QueryBuilder<User, User, QAfterSortBy> thenByDay() {
+extension CityQuerySortThenBy on QueryBuilder<City, City, QSortThenBy> {
+  QueryBuilder<City, City, QAfterSortBy> thenByDay() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'day', Sort.asc);
     });
   }
 
-  QueryBuilder<User, User, QAfterSortBy> thenByDayDesc() {
+  QueryBuilder<City, City, QAfterSortBy> thenByDayDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'day', Sort.desc);
     });
   }
 
-  QueryBuilder<User, User, QAfterSortBy> thenById() {
+  QueryBuilder<City, City, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
     });
   }
 
-  QueryBuilder<User, User, QAfterSortBy> thenByIdDesc() {
+  QueryBuilder<City, City, QAfterSortBy> thenByIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.desc);
     });
   }
 }
 
-extension UserQueryWhereDistinct on QueryBuilder<User, User, QDistinct> {
-  QueryBuilder<User, User, QDistinct> distinctByDay(
+extension CityQueryWhereDistinct on QueryBuilder<City, City, QDistinct> {
+  QueryBuilder<City, City, QDistinct> distinctByDay(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'day', caseSensitive: caseSensitive);
@@ -425,14 +425,14 @@ extension UserQueryWhereDistinct on QueryBuilder<User, User, QDistinct> {
   }
 }
 
-extension UserQueryProperty on QueryBuilder<User, User, QQueryProperty> {
-  QueryBuilder<User, int, QQueryOperations> idProperty() {
+extension CityQueryProperty on QueryBuilder<City, City, QQueryProperty> {
+  QueryBuilder<City, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
     });
   }
 
-  QueryBuilder<User, String?, QQueryOperations> dayProperty() {
+  QueryBuilder<City, String?, QQueryOperations> dayProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'day');
     });
