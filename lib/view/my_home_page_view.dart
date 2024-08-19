@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
+import 'package:isar_deneme/style/text_style.dart';
 
 import '../service/model/WeatherModel.dart';
 import '../service/weather_api.dart';
@@ -48,13 +49,13 @@ class _MyHomePageState extends State<MyHomePage> {
       body: const Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("LONDON"),
+          Text("LONDON", style: WeatherTextStyle.textStyle,),
           Center(
               child: Icon(Icons.cloud, color: Colors.white,size: 80,),
           ),
-          Text("15 degree"),
-          Text("Party Cloud"),
-          Text("Last updated at : 14:55")
+          Text("15°", style: WeatherTextStyle.textStyle,),
+          Text("Party Cloud",style: WeatherTextStyle.textStyle,),
+          Text("Last updated at : 14:55", style: WeatherTextStyle.textStyle,)
         ],
       ),
     );
