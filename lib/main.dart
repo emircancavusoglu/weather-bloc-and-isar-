@@ -1,11 +1,8 @@
-import 'dart:js_interop';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:isar_deneme/view/my_home_page_view.dart';
 import 'package:isar_deneme/weather/bloc/weather_bloc.dart';
 import 'package:isar_deneme/weather/bloc/weather_event.dart';
-import 'package:isar_deneme/weather/bloc/weather_state.dart';
+import 'package:isar_deneme/weather/view/weather_view.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,11 +13,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-
-      home: BlocProvider(create: (context) => WeatherBloc(),
-      child: const MyHomePage(title: '',),
-      )
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (c) => WeatherBloc()..add(FetchWeatherInfo("Bursa"))),
+      ],
+      child: const MaterialApp(
+        home: WeatherView(),
+      ),
     );
   }
 }

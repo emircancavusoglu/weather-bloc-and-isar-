@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:isar/isar.dart';
 import 'package:isar_deneme/isar/weather.dart';
 import 'package:path_provider/path_provider.dart';

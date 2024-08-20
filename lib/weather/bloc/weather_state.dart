@@ -1,20 +1,31 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:isar_deneme/weather/model/weather_model.dart';
+
+enum WeatherStatus { initial, busy, fetched, error }
 
 class WeatherState extends Equatable {
-  final Icon icon;
+   const WeatherState({
+    this.weatherStatus = WeatherStatus.initial,
+    this.weatherModel = const (current: WeatherModel(), local: WeatherModel()),
+    this.errorMessage = '',
+  });
 
-  const WeatherState({required this.icon});
+  final WeatherStatus weatherStatus;
+  final ({WeatherModel current, WeatherModel local}) weatherModel;
+  final String errorMessage;
+
+  WeatherState copyWith({
+    WeatherStatus? weatherStatus,
+    ({WeatherModel current, WeatherModel local})? weatherModel,
+    String? errorMessage,
+  }) {
+    return WeatherState(
+      weatherStatus: weatherStatus ?? this.weatherStatus,
+      weatherModel: weatherModel ?? this.weatherModel,
+      errorMessage: errorMessage ?? this.errorMessage,
+    );
+  }
 
   @override
-  List<Object> get props => [icon];
-}
-
-class WeatherInitial extends WeatherState {
-  const WeatherInitial() : super(icon: const Icon(Icons.add));
-}
-
-class WeatherLoadSuccess extends WeatherState {
-  const WeatherLoadSuccess({required super.icon});
+  List<Object?> get props => [weatherStatus, weatherModel, errorMessage];
 }
