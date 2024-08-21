@@ -15,7 +15,7 @@ class _PermissionAlertDialogState extends State<PermissionAlertDialog> {
       content: const Text("Do you have permission to turn on location service?"),
       actions: [
         FloatingActionButton(onPressed: (){
-          //transactions appropriate to yes
+
         }, child: const Text("Yes"),),
         FloatingActionButton(onPressed: (){
           Navigator.pop(context);

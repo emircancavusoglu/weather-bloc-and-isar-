@@ -9,14 +9,16 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
       emit(state.copyWith(weatherStatus: WeatherStatus.busy));
       try {
         final weatherModel = await WeatherService.fetchData(event.filtre);
+        print("done");
         emit(state.copyWith(
           weatherStatus: WeatherStatus.fetched,
-          weatherModel: (current: weatherModel.current, local: weatherModel.local),
+          weatherModel: weatherModel,
         ));
       } catch(e) {
-        emit(state.copyWith(errorMessage: e.toString()));
+        emit(state.copyWith(
+            weatherStatus: WeatherStatus.error,
+            errorMessage: e.toString()));
       }
     });
   }
-
 }

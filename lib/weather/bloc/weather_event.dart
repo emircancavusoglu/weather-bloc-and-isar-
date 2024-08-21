@@ -12,3 +12,6 @@ final class FetchWeatherInfo extends WeatherEvent {
 
   final String filtre;
 }
+final class TakeFormat extends WeatherEvent{
+
+}

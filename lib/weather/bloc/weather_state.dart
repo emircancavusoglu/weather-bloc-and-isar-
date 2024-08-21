@@ -6,17 +6,17 @@ enum WeatherStatus { initial, busy, fetched, error }
 class WeatherState extends Equatable {
    const WeatherState({
     this.weatherStatus = WeatherStatus.initial,
-    this.weatherModel = const (current: WeatherModel(), local: WeatherModel()),
+    this.weatherModel,
     this.errorMessage = '',
   });
 
   final WeatherStatus weatherStatus;
-  final ({WeatherModel current, WeatherModel local}) weatherModel;
+  final WeatherModel? weatherModel;
   final String errorMessage;
 
   WeatherState copyWith({
     WeatherStatus? weatherStatus,
-    ({WeatherModel current, WeatherModel local})? weatherModel,
+    WeatherModel? weatherModel,
     String? errorMessage,
   }) {
     return WeatherState(
