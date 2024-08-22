@@ -33,22 +33,22 @@ class WeatherModel {
 }
 
 class Current {
-  final int? lastUpdatedEpoch;
+  final double? lastUpdatedEpoch;
   final String? lastUpdated;
   final double tempC;
   final double tempF;
-  final int isDay;
+  final double isDay;
   final Condition condition;
   final double windMph;
   final double windKph;
-  final int windDegree;
+  final double windDegree;
   final String windDir;
-  final int pressureMb;
+  final double pressureMb;
   final double pressureIn;
   final double precipMm;
-  final int precipIn;
-  final int humidity;
-  final int cloud;
+  final double precipIn;
+  final double humidity;
+  final double cloud;
   final double feelslikeC;
   final double feelslikeF;
   final double windchillC;
@@ -57,19 +57,19 @@ class Current {
   final double heatindexF;
   final double dewpointC;
   final double dewpointF;
-  final int visKm;
-  final int visMiles;
-  final int uv;
+  final double visKm;
+  final double visMiles;
+  final double uv;
   final double gustMph;
   final double gustKph;
   final Map<String, double> airQuality;
-  final int? timeEpoch;
+  final double? timeEpoch;
   final String? time;
-  final int? snowCm;
-  final int? willItRain;
-  final int? chanceOfRain;
-  final int? willItSnow;
-  final int? chanceOfSnow;
+  final double? snowCm;
+  final double? willItRain;
+  final double? chanceOfRain;
+  final double? willItSnow;
+  final double? chanceOfSnow;
 
   Current({
     this.lastUpdatedEpoch,
@@ -125,7 +125,7 @@ class Current {
     pressureMb: json["pressure_mb"],
     pressureIn: json["pressure_in"]?.toDouble(),
     precipMm: json["precip_mm"]?.toDouble(),
-    precipIn: json["precip_in"],
+    precipIn: json["precip_in"]?.toDouble(),
     humidity: json["humidity"],
     cloud: json["cloud"],
     feelslikeC: json["feelslike_c"]?.toDouble(),
@@ -195,7 +195,7 @@ class Current {
 class Condition {
   final Text text;
   final Icon icon;
-  final int code;
+  final double code;
 
   Condition({
     required this.text,
@@ -260,7 +260,7 @@ class Forecast {
 
 class Forecastday {
   final DateTime date;
-  final int dateEpoch;
+  final double dateEpoch;
   final Day day;
   final Astro astro;
   final List<Current> hour;
@@ -296,9 +296,9 @@ class Astro {
   final String moonrise;
   final String moonset;
   final String moonPhase;
-  final int moonIllumination;
-  final int isMoonUp;
-  final int isSunUp;
+  final double moonIllumination;
+  final double isMoonUp;
+  final double isSunUp;
 
   Astro({
     required this.sunrise,
@@ -340,21 +340,21 @@ class Day {
   final double mintempC;
   final double mintempF;
   final double avgtempC;
-  final int avgtempF;
+  final double avgtempF;
   final double maxwindMph;
   final double maxwindKph;
   final double totalprecipMm;
   final double totalprecipIn;
-  final int totalsnowCm;
-  final int avgvisKm;
-  final int avgvisMiles;
-  final int avghumidity;
-  final int dailyWillItRain;
-  final int dailyChanceOfRain;
-  final int dailyWillItSnow;
-  final int dailyChanceOfSnow;
+  final double totalsnowCm;
+  final double avgvisKm;
+  final double avgvisMiles;
+  final double avghumidity;
+  final double dailyWillItRain;
+  final double dailyChanceOfRain;
+  final double dailyWillItSnow;
+  final double dailyChanceOfSnow;
   final Condition condition;
-  final int uv;
+  final double uv;
   final Map<String, double> airQuality;
 
   Day({
@@ -386,10 +386,10 @@ class Day {
     maxtempF: json["maxtemp_f"]?.toDouble(),
     mintempC: json["mintemp_c"]?.toDouble(),
     mintempF: json["mintemp_f"]?.toDouble(),
-    avgtempC: json["avgtemp_c"]?.toDouble(),
-    avgtempF: json["avgtemp_f"],
+    avgtempC: json["avgtemp_c"],
+    avgtempF: json["avgtemp_f"]?.toDouble(),
     maxwindMph: json["maxwind_mph"]?.toDouble(),
-    maxwindKph: json["maxwind_kph"]?.toDouble(),
+    maxwindKph: json["maxwind_kph"],
     totalprecipMm: json["totalprecip_mm"]?.toDouble(),
     totalprecipIn: json["totalprecip_in"]?.toDouble(),
     totalsnowCm: json["totalsnow_cm"],
@@ -437,7 +437,7 @@ class Location {
   final double lat;
   final double lon;
   final String tzId;
-  final int localtimeEpoch;
+  final double localtimeEpoch;
   final String localtime;
 
   Location({

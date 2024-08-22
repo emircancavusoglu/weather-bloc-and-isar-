@@ -4,6 +4,8 @@ import 'package:isar_deneme/style/text_style.dart';
 import 'package:isar_deneme/weather/bloc/weather_bloc.dart';
 import 'package:isar_deneme/weather/bloc/weather_state.dart';
 
+import '../../widget/text_field.dart';
+
 class WeatherView extends StatelessWidget {
   const WeatherView({super.key});
 
@@ -27,11 +29,11 @@ class WeatherView extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  const WeatherTextField(),
                   Text(
                     state.weatherModel?.location.name.toString() ?? 'null',
                     style: WeatherTextStyle.textStyle,
                   ),
-      
                   Text(state.weatherModel!.location.country.toString()),
                   Text(
                     state.weatherModel?.current.tempC.toString() ?? "null",

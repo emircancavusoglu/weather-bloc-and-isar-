@@ -8,9 +8,9 @@ sealed class WeatherEvent extends Equatable {
 }
 
 final class FetchWeatherInfo extends WeatherEvent {
-  FetchWeatherInfo(this.filtre);
+  FetchWeatherInfo(this.filter);
 
-  final String filtre;
+  final String filter;
 }
 final class TakeFormat extends WeatherEvent{
 
