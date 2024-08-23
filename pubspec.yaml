@@ -41,6 +41,10 @@ dependencies:
   path_provider: ^2.1.4
   #dio
   dio: ^5.6.0
+  #location
+  geolocator: ^13.0.1
+  geocoding: ^3.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

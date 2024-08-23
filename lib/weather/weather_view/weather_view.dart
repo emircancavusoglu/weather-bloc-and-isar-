@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:isar_deneme/style/text_style.dart';
 import 'package:isar_deneme/weather/bloc/weather_bloc.dart';
 import 'package:isar_deneme/weather/bloc/weather_state.dart';
-
 import '../../widget/text_field.dart';
 
 class WeatherView extends StatelessWidget {
@@ -20,38 +19,44 @@ class WeatherView extends StatelessWidget {
               const SnackBar(content: Text("Hata!"),
             )
             );
-          print("hata tipi : ${state.errorMessage}");
           }
         },
         child: BlocBuilder<WeatherBloc, WeatherState>(builder: (context, state) {
+          if(state.weatherStatus == WeatherStatus.busy){
+            return const CircularProgressIndicator();
+          }
           if(state.weatherStatus == WeatherStatus.fetched) {
             return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const WeatherTextField(),
-                  Text(
-                    state.weatherModel?.location.name.toString() ?? 'null',
-                    style: WeatherTextStyle.textStyle,
-                  ),
-                  Text(state.weatherModel!.location.country.toString()),
-                  Text(
-                    state.weatherModel?.current.tempC.toString() ?? "null",
-                    style: WeatherTextStyle.textStyle,
-                  ),
-                  Text(
-                    state.weatherModel?.current.lastUpdated.toString() ?? "",
-                    style: WeatherTextStyle.textStyle,
-                  )
-                ],
-              ),
+              child: buildColumn(state),
             );
           }
-          return const Center(child: CircularProgressIndicator(
-            backgroundColor: Colors.white,
-          ));
+          return buildColumn(state);
         }),
       ),
+    );
+  }
+
+  Column buildColumn(WeatherState state) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const WeatherTextField(),
+        if(state.weatherModel != null)...[
+          Text(
+            state.weatherModel?.location?.name.toString() ?? 'null',
+            style: WeatherTextStyle.textStyle,
+          ),
+          Text(state.weatherModel?.location?.country.toString() ?? ""),
+          Text(
+            state.weatherModel?.current?.tempC.toString() ?? "null",
+            style: WeatherTextStyle.textStyle,
+          ),
+          Text(
+            state.weatherModel?.current?.lastUpdated.toString() ?? "",
+            style: WeatherTextStyle.textStyle,
+          )
+        ]
+      ],
     );
   }
 }

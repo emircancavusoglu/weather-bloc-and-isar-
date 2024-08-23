@@ -10,9 +10,9 @@ class WeatherState extends Equatable {
     this.errorMessage = '',
   });
 
-  final WeatherStatus weatherStatus;
-  final WeatherModel? weatherModel;
-  final String errorMessage;
+   final WeatherStatus weatherStatus;
+   final WeatherModel? weatherModel;
+   final String errorMessage;
 
   WeatherState copyWith({
     WeatherStatus? weatherStatus,

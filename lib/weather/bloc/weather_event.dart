@@ -15,3 +15,8 @@ final class FetchWeatherInfo extends WeatherEvent {
 final class TakeFormat extends WeatherEvent{
 
 }
+class FetchWeatherInfoByCoordinates extends WeatherEvent {
+  final double latitude;
+  final double longitude;
+  FetchWeatherInfoByCoordinates(this.latitude, this.longitude);
+}
