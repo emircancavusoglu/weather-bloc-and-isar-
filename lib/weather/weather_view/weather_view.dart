@@ -23,7 +23,8 @@ class WeatherView extends StatelessWidget {
         },
         child: BlocBuilder<WeatherBloc, WeatherState>(builder: (context, state) {
           if(state.weatherStatus == WeatherStatus.busy){
-            return const CircularProgressIndicator();
+            return const Center(
+                child: CircularProgressIndicator());
           }
           if(state.weatherStatus == WeatherStatus.fetched) {
             return Center(
@@ -36,27 +37,39 @@ class WeatherView extends StatelessWidget {
     );
   }
 
-  Column buildColumn(WeatherState state) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const WeatherTextField(),
-        if(state.weatherModel != null)...[
-          Text(
-            state.weatherModel?.location?.name.toString() ?? 'null',
-            style: WeatherTextStyle.textStyle,
-          ),
-          Text(state.weatherModel?.location?.country.toString() ?? ""),
-          Text(
-            state.weatherModel?.current?.tempC.toString() ?? "null",
-            style: WeatherTextStyle.textStyle,
-          ),
-          Text(
-            state.weatherModel?.current?.lastUpdated.toString() ?? "",
-            style: WeatherTextStyle.textStyle,
+  Container buildColumn(WeatherState state) {
+    return Container(
+      decoration: BoxDecoration(
+          gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Colors.lightBlue,
+                Colors.blue[900]!,
+              ]
           )
-        ]
-      ],
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const WeatherTextField(),
+          if(state.weatherModel != null)...[
+            Text(
+              state.weatherModel?.location?.name.toString() ?? 'null',
+              style: WeatherTextStyle.textStyle,
+            ),
+            Text(state.weatherModel?.location?.country.toString() ?? ""),
+            Text(
+              state.weatherModel?.current?.tempC.toString() ?? "null",
+              style: WeatherTextStyle.textStyle,
+            ),
+            Text(
+              state.weatherModel?.current?.lastUpdated.toString() ?? "",
+              style: WeatherTextStyle.textStyle,
+            )
+          ]
+        ],
+      ),
     );
   }
 }

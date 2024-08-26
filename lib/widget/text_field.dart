@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:isar_deneme/weather/bloc/weather_event.dart';
@@ -21,24 +22,39 @@ class _WeatherTextFieldState extends State<WeatherTextField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: _controller,
-      decoration: const InputDecoration(
-        border: OutlineInputBorder(),
-        hintText: 'Enter city name',
+    return Align(
+      alignment: Alignment.center, // Center alignment
+      child: SizedBox(
+        width: 250, // Adjust the width as needed
+        child: TextField(
+          controller: _controller,
+          decoration: InputDecoration(
+            suffixIcon: IconButton(
+              icon: const Icon(Icons.clear),
+              onPressed: () {
+                _controller.clear();
+              },
+            ),
+            filled: true,
+            fillColor: Colors.white,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            hintText: 'Enter city name',
+          ),
+          onSubmitted: (value) async {
+            if (value.isNotEmpty) {
+              context.read<WeatherBloc>().add(FetchWeatherInfo(value));
+              print("Weather data fetched successfully for $value");
+              _controller.clear();
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Please enter a city name')),
+              );
+            }
+          },
+        ),
       ),
-      onSubmitted: (value) async {
-        if (value.isNotEmpty) {
-          context.read<WeatherBloc>().add(FetchWeatherInfo(value));
-            print("Weather data fetched successfully for $value");
-            _controller.clear();
-            print("Error fetching weather data:");
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Please enter a city name')),
-          );
-        }
-      },
     );
   }
 }
