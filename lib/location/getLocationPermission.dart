@@ -1,21 +1,30 @@
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
-Future<String> getLocationCity() async {
-  try {
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
 
-    List<Placemark> placemarks = await placemarkFromCoordinates(
-        position.latitude, position.longitude);
+Future<bool> requestLocationPermission() async {
+  LocationPermission permission = await Geolocator.checkPermission();
+  if (permission == LocationPermission.denied) {
+    permission = await Geolocator.requestPermission();
+    if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
+      return false;
+    }
+  }
+  return permission != LocationPermission.deniedForever;
+}
+
+Future<String> getCityFromCoordinates(double latitude, double longitude) async {
+  try {
+    List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude);
 
     if (placemarks.isNotEmpty) {
       Placemark place = placemarks[0];
-      return place.locality ?? "Bursa";
+      return place.locality ?? "Hata: Şehir adı bulunamadı";
+    } else {
+      return "Hata: Şehir adı bulunamadı";
     }
   } catch (e) {
-    print("Konum alınamadı: $e");
+    print("Hata: $e");
+    return "Hata: $e";
   }
-
-  return "Ankara";
 }
