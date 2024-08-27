@@ -25,7 +25,7 @@ class _WeatherTextFieldState extends State<WeatherTextField> {
     return Align(
       alignment: Alignment.center, // Center alignment
       child: SizedBox(
-        width: 250, // Adjust the width as needed
+        width: 290, // Adjust the width as needed
         child: TextField(
           controller: _controller,
           decoration: InputDecoration(
