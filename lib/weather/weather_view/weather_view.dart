@@ -4,6 +4,8 @@ import 'package:isar_deneme/style/text_style.dart';
 import 'package:isar_deneme/weather/bloc/weather_bloc.dart';
 import 'package:isar_deneme/weather/bloc/weather_state.dart';
 import '../../widget/text_field.dart';
+import 'package:path_provider/path_provider.dart';
+
 
 class WeatherView extends StatelessWidget {
   const WeatherView({super.key});
