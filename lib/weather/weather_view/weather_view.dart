@@ -3,12 +3,43 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:isar_deneme/style/text_style.dart';
 import 'package:isar_deneme/weather/bloc/weather_bloc.dart';
 import 'package:isar_deneme/weather/bloc/weather_state.dart';
+import 'package:hive/hive.dart';
 import '../../widget/text_field.dart';
-import 'package:path_provider/path_provider.dart';
 
-
-class WeatherView extends StatelessWidget {
+class WeatherView extends StatefulWidget {
   const WeatherView({super.key});
+
+  @override
+  _WeatherViewState createState() => _WeatherViewState();
+}
+
+class _WeatherViewState extends State<WeatherView> {
+  final GlobalKey<WeatherTextFieldState> weatherTextFieldKey = GlobalKey<WeatherTextFieldState>();
+  late TextEditingController _controller;
+  List<String> bottomNavItems = ["Cloudy", "Sunny", "Snowy"];
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+    _loadSavedItems();
+  }
+
+  void _loadSavedItems() async {
+    var box = await Hive.openBox('textfieldbox');
+    setState(() {
+      bottomNavItems = box.values.cast<String>().toList();
+      if (bottomNavItems.length < 2) {
+        bottomNavItems.addAll(["Default1", "Default2"]);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +69,33 @@ class WeatherView extends StatelessWidget {
           },
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          var box = await Hive.openBox('textfieldbox');
+          String text = _controller.text;
+
+          if (text.isNotEmpty) {
+            await box.add(text);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Saved "$text" to Hive'),duration: Duration(seconds: 1),),
+            );
+            _loadSavedItems();
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('No text to save')),
+            );
+          }
+        },
+        child: const Text("Save"),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: bottomNavItems.map((item) {
+          return BottomNavigationBarItem(
+            icon: const Icon(Icons.star),
+            label: item,
+          );
+        }).toList(),
+      ),
     );
   }
 
@@ -61,14 +119,17 @@ class WeatherView extends StatelessWidget {
             style: WeatherTextStyle.textStyle,
           ),
           const SizedBox(height: 100,),
-          const WeatherTextField(),
+          WeatherTextField(
+            key: weatherTextFieldKey,
+            controller: _controller,
+          ),
           if (state.weatherModel != null) ...[
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Padding(
                   padding: const EdgeInsets.only(bottom: 140, left: 320),
-                  child: Container(
+                  child: SizedBox(
                     height: 120,
                     width: 120,
                     child: Image.network(

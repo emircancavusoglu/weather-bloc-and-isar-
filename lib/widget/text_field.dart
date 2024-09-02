@@ -1,38 +1,39 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
 import 'package:isar_deneme/weather/bloc/weather_event.dart';
 import '../weather/bloc/weather_bloc.dart';
 
 class WeatherTextField extends StatefulWidget {
-  const WeatherTextField({super.key});
+  final TextEditingController controller;  // Add this line
+
+  const WeatherTextField({Key? key, required this.controller}) : super(key: key);
 
   @override
-  State<WeatherTextField> createState() => _WeatherTextFieldState();
+  State<WeatherTextField> createState() => WeatherTextFieldState();
 }
 
-class _WeatherTextFieldState extends State<WeatherTextField> {
-  final TextEditingController _controller = TextEditingController();
-
+class WeatherTextFieldState extends State<WeatherTextField> {
   @override
   void dispose() {
-    _controller.dispose();
     super.dispose();
   }
+
+  String get currentText => widget.controller.text;
 
   @override
   Widget build(BuildContext context) {
     return Align(
-      alignment: Alignment.center, // Center alignment
+      alignment: Alignment.center,
       child: SizedBox(
-        width: 290, // Adjust the width as needed
+        width: 290,
         child: TextField(
-          controller: _controller,
+          controller: widget.controller,
           decoration: InputDecoration(
             suffixIcon: IconButton(
               icon: const Icon(Icons.clear),
               onPressed: () {
-                _controller.clear();
+                widget.controller.clear();
               },
             ),
             filled: true,
@@ -46,7 +47,7 @@ class _WeatherTextFieldState extends State<WeatherTextField> {
             if (value.isNotEmpty) {
               context.read<WeatherBloc>().add(FetchWeatherInfo(value));
               print("Weather data fetched successfully for $value");
-              _controller.clear();
+              widget.controller.clear();  // Use widget.controller
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Please enter a city name')),

@@ -1,43 +1,63 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:isar/isar.dart';
-import 'package:isar_deneme/config/database/isar_database.dart';
+import 'package:hive/hive.dart';
 import 'package:isar_deneme/weather/bloc/weather_bloc.dart';
 import 'package:isar_deneme/weather/bloc/weather_event.dart';
+import 'package:isar_deneme/weather/model/weather_hive_model.dart';
 import 'package:isar_deneme/weather/weather_view/weather_view.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 
 Future<void> main() async {
-  await IsarDatabase.initialize();
   WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  Hive.registerAdapter(WeatherHiveModelAdapter());
 
-  Position position = await Geolocator.getCurrentPosition();
-
-  runApp(MyApp(
-    position: position,
-  ));
+  var textFieldBox = await Hive.openBox("textField box");
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  final Position position;
-
-  const MyApp({super.key, required this.position});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (c) => WeatherBloc()..add(FetchWeatherInfoByCoordinates(position.latitude, position.longitude)),
-        ),
-      ],
-      child: const MaterialApp(
-        home: Scaffold(
-          body: WeatherView(),
-        ),
-      ),
+    return FutureBuilder<Position>(
+      future: Geolocator.getCurrentPosition(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const MaterialApp(
+            home: Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            ),
+          );
+        } else if (snapshot.hasError) {
+          return MaterialApp(
+            home: Scaffold(
+              body: Center(child: Text('Error: ${snapshot.error}')),
+            ),
+          );
+        } else {
+          final position = snapshot.data!;
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (c) => WeatherBloc()
+                  ..add(FetchWeatherInfoByCoordinates(
+                    position.latitude,
+                    position.longitude,
+                  )),
+              ),
+            ],
+            child: const MaterialApp(
+              home: Scaffold(
+                body: WeatherView(),
+              ),
+            ),
+          );
+        }
+      },
     );
   }
 }

@@ -1,9 +1,3 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:isar_deneme/weather/bloc/weather_event.dart';
-import 'package:isar_deneme/weather/bloc/weather_state.dart';
-import 'package:isar_deneme/weather/service/weather_service.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:isar_deneme/weather/bloc/weather_event.dart';
 import 'package:isar_deneme/weather/bloc/weather_state.dart';
