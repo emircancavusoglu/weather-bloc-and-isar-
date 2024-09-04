@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hive/hive.dart';
 import 'package:isar_deneme/weather/bloc/weather_event.dart';
 import '../weather/bloc/weather_bloc.dart';
 
 class WeatherTextField extends StatefulWidget {
-  final TextEditingController controller;  // Add this line
+  final TextEditingController controller;
 
-  const WeatherTextField({Key? key, required this.controller}) : super(key: key);
+  const WeatherTextField({super.key, required this.controller});
 
   @override
   State<WeatherTextField> createState() => WeatherTextFieldState();
@@ -47,7 +46,7 @@ class WeatherTextFieldState extends State<WeatherTextField> {
             if (value.isNotEmpty) {
               context.read<WeatherBloc>().add(FetchWeatherInfo(value));
               print("Weather data fetched successfully for $value");
-              widget.controller.clear();  // Use widget.controller
+              widget.controller.clear();
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Please enter a city name')),

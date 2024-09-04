@@ -5,6 +5,8 @@ import 'package:isar_deneme/weather/bloc/weather_bloc.dart';
 import 'package:isar_deneme/weather/bloc/weather_state.dart';
 import 'package:hive/hive.dart';
 import '../../widget/text_field.dart';
+import '../bloc/weather_event.dart';
+import '../model/weather_hive_model.dart';
 
 class WeatherView extends StatefulWidget {
   const WeatherView({super.key});
@@ -17,6 +19,7 @@ class _WeatherViewState extends State<WeatherView> {
   final GlobalKey<WeatherTextFieldState> weatherTextFieldKey = GlobalKey<WeatherTextFieldState>();
   late TextEditingController _controller;
   List<String> bottomNavItems = ["Cloudy", "Sunny", "Snowy"];
+  List<double> temperatures = [];
 
   @override
   void initState() {
@@ -26,9 +29,10 @@ class _WeatherViewState extends State<WeatherView> {
   }
 
   void _loadSavedItems() async {
-    var box = await Hive.openBox('textfieldbox');
+    var box = await Hive.openBox<WeatherHiveModel>('weatherBox');
     setState(() {
-      bottomNavItems = box.values.cast<String>().toList();
+      bottomNavItems = box.values.map((item) => item.location).toList();
+      temperatures = box.values.map((item) => item.temperature).toList();
       if (bottomNavItems.length < 2) {
         bottomNavItems.addAll(["Default1", "Default2"]);
       }
@@ -51,6 +55,14 @@ class _WeatherViewState extends State<WeatherView> {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text("Hata!")),
             );
+          } else if (state.weatherStatus == WeatherStatus.fetched) {
+            if (state.weatherModel?.location?.name != null) {
+              _loadSavedItems();
+            }
+          } else if (state.weatherStatus == WeatherStatus.selected) {
+            if (state.weatherModel != null) {
+              setState(() {});
+            }
           }
         },
         child: BlocBuilder<WeatherBloc, WeatherState>(
@@ -59,40 +71,35 @@ class _WeatherViewState extends State<WeatherView> {
               return const Center(
                 child: CircularProgressIndicator(),
               );
-            }
-            if (state.weatherStatus == WeatherStatus.fetched) {
-              return Center(
-                child: buildColumn(state),
-              );
+            } else if (state.weatherStatus == WeatherStatus.fetched || state.weatherStatus == WeatherStatus.selected) {
+              return buildColumn(state);
+            } else if (state.weatherStatus == WeatherStatus.error) {
+              return Center(child: Text("Error: ${state.errorMessage}"));
             }
             return buildColumn(state);
           },
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          var box = await Hive.openBox('textfieldbox');
-          String text = _controller.text;
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: 0,
+        onTap: (index) async {
+          var box = await Hive.openBox<WeatherHiveModel>('weatherBox');
+          var selectedItem = box.getAt(index);
 
-          if (text.isNotEmpty) {
-            await box.add(text);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Saved "$text" to Hive'),duration: Duration(seconds: 1),),
-            );
-            _loadSavedItems();
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('No text to save')),
-            );
+          if (selectedItem != null) {
+            context.read<WeatherBloc>().add(WeatherDataSelectedEvent(
+              location: selectedItem.location,
+              temperature: selectedItem.temperature,
+            ));
           }
         },
-        child: const Text("Save"),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: bottomNavItems.map((item) {
+        items: bottomNavItems.asMap().entries.map((entry) {
+          int index = entry.key;
+          String location = entry.value;
+          double temperature = temperatures.length > index ? temperatures[index] : 0.0;
           return BottomNavigationBarItem(
-            icon: const Icon(Icons.star),
-            label: item,
+            icon: const Icon(Icons.location_on, color: Colors.red),
+            label: '$location - ${temperature.toStringAsFixed(1)}°C',
           );
         }).toList(),
       ),
@@ -114,10 +121,11 @@ class _WeatherViewState extends State<WeatherView> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            state.weatherModel?.location?.localtime.toString() ?? "",
-            style: WeatherTextStyle.textStyle,
-          ),
+          if (state.weatherModel?.location?.localtime != null)
+            Text(
+              state.weatherModel!.location!.localtime.toString(),
+              style: WeatherTextStyle.textStyle,
+            ),
           const SizedBox(height: 100,),
           WeatherTextField(
             key: weatherTextFieldKey,
@@ -132,11 +140,13 @@ class _WeatherViewState extends State<WeatherView> {
                   child: SizedBox(
                     height: 120,
                     width: 120,
-                    child: Image.network(
-                      state.weatherModel?.current?.condition?.icon ??
-                          "https://www.google.com/imgres?q=rainy&imgurl=https%3A%2F%2Fcdn.girls.buzz%2Fimages%2Fgirls.buzz.max-1440x900.webp&imgrefurl=https%3A%2F%2Fgirls.buzz%2Fblogs%2Fon-a-rainy-day%2F&docid=V0TrtzfhoFgqSM&tbnid=aDT82BcHIlugsM&vet=12ahUKEwjJivb4ypSIAxU_SfEDHZqsC5UQM3oECHsQAA..i&w=1200&h=800&hcb=2&ved=2ahUKEwjJivb4ypSIAxU_SfEDHZqsC5UQM3oECHsQAA",
+                    child: state.weatherModel?.current?.condition?.icon != null &&
+                        state.weatherModel!.current!.condition!.icon!.isNotEmpty
+                        ? Image.network(
+                      state.weatherModel!.current!.condition!.icon!,
                       fit: BoxFit.cover,
-                    ),
+                    )
+                        : const SizedBox.shrink(),
                   ),
                 ),
                 Expanded(
@@ -145,38 +155,44 @@ class _WeatherViewState extends State<WeatherView> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          "${state.weatherModel?.current?.tempC}°C",
-                          style: WeatherTextStyle.textStyle,
-                        ),
+                        if (state.weatherModel?.current?.tempC != null)
+                          Text(
+                            "${state.weatherModel!.current!.tempC}°C",
+                            style: WeatherTextStyle.textStyle,
+                          ),
                         Row(
                           children: [
-                            Text(
-                              '${state.weatherModel?.location?.name}, ',
-                              style: WeatherTextStyle.textStyle,
-                            ),
-                            Expanded(
-                              child: Text(
-                                state.weatherModel?.location?.country.toString() ?? "",
+                            if (state.weatherModel?.location?.name != null)
+                              Text(
+                                '${state.weatherModel!.location!.name}, ',
                                 style: WeatherTextStyle.textStyle,
-                                overflow: TextOverflow.ellipsis,
                               ),
-                            ),
+                            if (state.weatherModel?.location?.country != null)
+                              Expanded(
+                                child: Text(
+                                  state.weatherModel!.location!.country!,
+                                  style: WeatherTextStyle.textStyle,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
                           ],
                         ),
                         if (state.weatherModel?.current?.airQuality != null) ...[
-                          Text(
-                            "PM10: ${state.weatherModel!.current!.airQuality?.pm10}",
-                            style: WeatherTextStyle.textStyle,
-                          ),
-                          Text(
-                            "PM2.5: ${state.weatherModel!.current!.airQuality?.pm25}",
-                            style: WeatherTextStyle.textStyle,
-                          ),
-                          Text(
-                            "O3: ${state.weatherModel!.current!.airQuality?.o3}",
-                            style: WeatherTextStyle.textStyle,
-                          ),
+                          if (state.weatherModel!.current!.airQuality?.pm10 != null)
+                            Text(
+                              "PM10: ${state.weatherModel!.current!.airQuality!.pm10}",
+                              style: WeatherTextStyle.textStyle,
+                            ),
+                          if (state.weatherModel!.current!.airQuality?.pm25 != null)
+                            Text(
+                              "PM2.5: ${state.weatherModel!.current!.airQuality!.pm25}",
+                              style: WeatherTextStyle.textStyle,
+                            ),
+                          if (state.weatherModel!.current!.airQuality?.o3 != null)
+                            Text(
+                              "O3: ${state.weatherModel!.current!.airQuality!.o3}",
+                              style: WeatherTextStyle.textStyle,
+                            ),
                         ],
                       ],
                     ),

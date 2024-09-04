@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:hive/hive.dart';
 import 'package:isar_deneme/weather/bloc/weather_bloc.dart';
 import 'package:isar_deneme/weather/bloc/weather_event.dart';
 import 'package:isar_deneme/weather/model/weather_hive_model.dart';

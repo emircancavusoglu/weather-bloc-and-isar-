@@ -23,3 +23,15 @@ class FetchWeatherInfoByCoordinates extends WeatherEvent {
   @override
   List<Object> get props => [latitude, longitude];
 }
+class WeatherDataSelectedEvent extends WeatherEvent {
+  final String location;
+  final double temperature;
+
+  WeatherDataSelectedEvent({
+    required this.location,
+    required this.temperature,
+  });
+
+  @override
+  List<Object> get props => [location, temperature];
+}
