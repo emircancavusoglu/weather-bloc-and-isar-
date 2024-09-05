@@ -120,8 +120,23 @@ class _WeatherViewState extends State<WeatherView> {
         int index = entry.key;
         String location = entry.value;
         double temperature = temperatures.length > index ? temperatures[index] : 0.0;
+
         return BottomNavigationBarItem(
-          icon: const Icon(Icons.location_on, color: Colors.red),
+          icon: GestureDetector(
+            onLongPress: () async {
+              var box = await Hive.openBox<WeatherHiveModel>('weatherBox');
+              if(bottomNavItems.length >2){
+                await box.deleteAt(index);
+
+                setState(() {
+                  bottomNavItems.removeAt(index);
+                  temperatures.removeAt(index);
+                });
+
+              }
+                          },
+            child: const Icon(Icons.location_on, color: Colors.red),
+          ),
           label: '$location - ${temperature.toStringAsFixed(1)}°C',
         );
       }).toList(),
@@ -157,7 +172,6 @@ class _WeatherViewState extends State<WeatherView> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                // Weather condition icon
                 Padding(
                   padding: const EdgeInsets.only(bottom: 140, left: 320),
                   child: SizedBox(
