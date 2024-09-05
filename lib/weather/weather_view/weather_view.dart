@@ -53,8 +53,10 @@ class _WeatherViewState extends State<WeatherView> {
         listener: (context, state) {
           if (state.weatherStatus == WeatherStatus.error) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("Hata!")),
+              const SnackBar(content: Text("Hata! Hava durumu bilgisi alınamadı. Lütfen tekrar deneyin.")),
             );
+            _controller.clear();
+            FocusScope.of(context).requestFocus(FocusNode());
           } else if (state.weatherStatus == WeatherStatus.fetched) {
             if (state.weatherModel?.location?.name != null) {
               _loadSavedItems();
@@ -74,35 +76,55 @@ class _WeatherViewState extends State<WeatherView> {
             } else if (state.weatherStatus == WeatherStatus.fetched || state.weatherStatus == WeatherStatus.selected) {
               return buildColumn(state);
             } else if (state.weatherStatus == WeatherStatus.error) {
-              return Center(child: Text("Error: ${state.errorMessage}"));
+              return buildErrorScreen();
             }
             return buildColumn(state);
           },
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 0,
-        onTap: (index) async {
-          var box = await Hive.openBox<WeatherHiveModel>('weatherBox');
-          var selectedItem = box.getAt(index);
+      bottomNavigationBar: buildBottomNavigationBar(),
+    );
+  }
 
-          if (selectedItem != null) {
-            context.read<WeatherBloc>().add(WeatherDataSelectedEvent(
-              location: selectedItem.location,
-              temperature: selectedItem.temperature,
-            ));
-          }
-        },
-        items: bottomNavItems.asMap().entries.map((entry) {
-          int index = entry.key;
-          String location = entry.value;
-          double temperature = temperatures.length > index ? temperatures[index] : 0.0;
-          return BottomNavigationBarItem(
-            icon: const Icon(Icons.location_on, color: Colors.red),
-            label: '$location - ${temperature.toStringAsFixed(1)}°C',
-          );
-        }).toList(),
+  Widget buildErrorScreen() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text("Hata! Yeni bir şehir arayın.", style: TextStyle(color: Colors.white, fontSize: 18)),
+          const SizedBox(height: 20),
+          WeatherTextField(
+            key: weatherTextFieldKey,
+            controller: _controller,
+          ),
+        ],
       ),
+    );
+  }
+
+  BottomNavigationBar buildBottomNavigationBar() {
+    return BottomNavigationBar(
+      currentIndex: 0,
+      onTap: (index) async {
+        var box = await Hive.openBox<WeatherHiveModel>('weatherBox');
+        var selectedItem = box.getAt(index);
+
+        if (selectedItem != null) {
+          context.read<WeatherBloc>().add(WeatherDataSelectedEvent(
+            location: selectedItem.location,
+            temperature: selectedItem.temperature,
+          ));
+        }
+      },
+      items: bottomNavItems.asMap().entries.map((entry) {
+        int index = entry.key;
+        String location = entry.value;
+        double temperature = temperatures.length > index ? temperatures[index] : 0.0;
+        return BottomNavigationBarItem(
+          icon: const Icon(Icons.location_on, color: Colors.red),
+          label: '$location - ${temperature.toStringAsFixed(1)}°C',
+        );
+      }).toList(),
     );
   }
 
@@ -126,7 +148,7 @@ class _WeatherViewState extends State<WeatherView> {
               state.weatherModel!.location!.localtime.toString(),
               style: WeatherTextStyle.textStyle,
             ),
-          const SizedBox(height: 100,),
+          const SizedBox(height: 100),
           WeatherTextField(
             key: weatherTextFieldKey,
             controller: _controller,
@@ -135,6 +157,7 @@ class _WeatherViewState extends State<WeatherView> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
+                // Weather condition icon
                 Padding(
                   padding: const EdgeInsets.only(bottom: 140, left: 320),
                   child: SizedBox(
@@ -149,6 +172,7 @@ class _WeatherViewState extends State<WeatherView> {
                         : const SizedBox.shrink(),
                   ),
                 ),
+                // Weather information
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.only(top: 25, left: 30),
